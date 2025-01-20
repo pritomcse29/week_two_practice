@@ -1,4 +1,8 @@
 let getAllProducts = (query) => {
+    if (!query)
+    {
+        return; 
+    }
     console.log(query);
     const apiUrl = `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`;
     fetch(apiUrl)
@@ -6,11 +10,11 @@ let getAllProducts = (query) => {
         .then((data) => {
             console.log(data);
             const container = document.getElementById("card-container");
+            container.innerHTML = ""; 
             if (data.meals) {
-                // Pass the fetched meals to showData
                 showData(data.meals);
             } else {
-                container.innerHTML = `<p>No products found.</p>`;
+                container.innerHTML = `<p>No products found for "${query}".</p>`;
             }
         })
         .catch((error) => console.error("Error fetching products:", error));
@@ -22,6 +26,8 @@ document.getElementById("search-btn").addEventListener("click",()=>{
         getAllProducts(inputText);
         document.getElementById("input-text").value = "";
     }
+   
+    
     else{
      alert("Please enter some text.");
     }
@@ -31,16 +37,18 @@ const showData = (data) =>{
    
     const container = document.getElementById("card-container");
     container.innerHTML ="";
-    data.forEach((userData)=>{
+   
+        data.forEach((userData)=>{
         const div = document.createElement("div");
         div.classList.add("card");
         div.innerHTML=`
-          <img class="card-img" src="${userData.strMealThumb}" onclick="details('${userData.idMeal}')">
-          <h2>${userData.strMeal}</h2>
-        
-        `;
+              <img class="card-img" src="${userData.strMealThumb}" onclick="details('${userData.idMeal}')">
+              <h2>${userData.strMeal}</h2>
+            
+            `;
         container.appendChild(div);
-    })
+        })
+  
 }
 
 const details = (id) => {
